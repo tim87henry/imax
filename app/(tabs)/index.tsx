@@ -42,7 +42,9 @@ export default function Index() {
           />
         ): moviesError ?  (
           <Text className="text-white">Error: {moviesError?.message}</Text>
-        ) : <View className="flex-1 mt-5">
+        ) : 
+        
+        <View className="flex-1 mt-5">
           
           <SearchBar
             onPress = {() => router.push("/search")}
