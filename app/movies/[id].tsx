@@ -1,7 +1,7 @@
-import { images } from '@/constants/images';
+import { icons } from '@/constants/icons';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 
 const MovieDetails = () => {
 
@@ -22,19 +22,46 @@ const MovieDetails = () => {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : 'https://placehold.co/600x400/1a1a1a/FFFFFF.png';
 
+  console.log(movie)
   return (
     <View className='flex-1 bg-primary'>
-      <Image source={images.bg} className='flex-1 absolute w-full z-0' 
-      resizeMode='cover' />
-      <View className='mt-52 ml-10 mr-10'>
-        <Text className='font-bold text-white'>{movie.title} ({Math.round(movie.vote_average)}/10)</Text>
-        <Text className='font-light mt-4 text-white'>{movie.overview}</Text>
-        <Image 
-          source={{uri: posterUrl}}
-          className='w-full h-full rounded-lg mt-12'
-          resizeMode='none'
-        />
-      </View>
+      <ScrollView contentContainerStyle={{
+        paddingBottom: 80
+      }}>
+        <View>
+          <Image 
+            source={{uri: posterUrl}}
+            className='w-full h-[550px]'
+            resizeMode='stretch'
+          />
+        </View>
+        <View className='flex-col items-start justify-center mt-5 px-5'>
+          <Text className='text-white font-bold text-xl'>{movie.title}</Text>
+          <View className='flex-row items-center gap-x-2 mt-2'>
+            <Text className='text-light-200 text-sm'>{movie.release_date.split("-")[0]}</Text>
+            <Text className='text-light-200 text-sm'>{movie.runtime}m</Text>
+          </View>
+          <View className='flex-row items-center gap-x-2'>
+            <Image source={icons.star} className='size-4' />
+            <Text className='text-white mt-2 text-sm'>{Math.round(movie.vote_average)}/10</Text>
+            <Text className='text-white mt-2 text-sm'>({movie.vote_count} votes)</Text>
+          </View>
+          <View className='flex-col'>
+            <Text className='text-light-200 text-sm mt-4'>Overview</Text>
+            <Text className='text-light-200 text-base mt-4 font-bold'>{movie.overview}</Text>
+          </View>
+          <View className='flex-col'>
+            <Text className='text-light-200 text-sm mt-4'>Genres</Text>
+            <View className='flex-row gap-x-3'>
+              {movie.genres.map((item) => (
+                  <Text className='text-light-200 text-base mt-4 font-bold'>
+                    {item.name}
+                  </Text>
+                ))}
+            </View>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   )
 }
