@@ -1,7 +1,7 @@
 import { icons } from '@/constants/icons';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 const MovieDetails = () => {
 
@@ -115,6 +115,15 @@ const MovieDetails = () => {
               value={movie.production_companies.map((company) => company.name).join(" • ")}
             />
           </View>
+
+          <TouchableOpacity 
+            className='bottom-0 left-0 right-0  rounded-lg py-4 mt-8 px-5 pb-5 flex-row items-center gap-x-1'
+            onPress={router.back}
+            style={{ backgroundColor: '#AB8BFF'}}
+            >
+            <Image source={icons.arrow} className='size-5 rotate-180 mt-1' tintColor="#fff"/>
+            <Text className='text-white font-semibold'>Go back</Text>
+          </TouchableOpacity>
 
         </View>
       </ScrollView>
