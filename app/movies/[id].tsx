@@ -1,7 +1,9 @@
 import { icons } from '@/constants/icons';
+import { saveDeleteMovie } from '@/services/appwrite';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 const MovieDetails = () => {
 
@@ -22,7 +24,6 @@ const MovieDetails = () => {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : 'https://placehold.co/600x400/1a1a1a/FFFFFF.png';
 
-  // console.log(movie)
   const release_date = new Date(movie.release_date)
 
   interface MovieInfoProps {
@@ -37,6 +38,20 @@ const MovieDetails = () => {
     </View>
   )
 
+  const saveMovie = async () => {
+    let action=await saveDeleteMovie(movie)
+    console.log("This is what happened :: ",action)
+    Toast.show({
+      type: action === 'saved' ? 'success' : 'info',
+      text1:
+        action === 'saved'
+          ? 'Added to Watchlist'
+          : 'Removed from Watchlist',
+      position: 'bottom',
+      visibilityTime: 2000
+    });
+  }
+
   return (
     <View className='flex-1 bg-primary'>
       <ScrollView contentContainerStyle={{
@@ -50,7 +65,24 @@ const MovieDetails = () => {
           />
         </View>
         <View className='flex-col items-start justify-center mt-5 px-5'>
-          <Text className='text-white font-bold text-xl'>{movie.title}</Text>
+          <View className='flex-row gap-x-6 justify-start'>
+            <View>
+              <Text className='text-white font-bold text-xl py-1 px-1 pb-1'>{movie.title}</Text>
+            </View>
+            <View>
+              <TouchableOpacity 
+                className='rounded-lg py-1 mt-1 px-1 pb-1 flex-row items-center'
+                style={{ backgroundColor: '#AB8BFF'}}
+                onPress={saveMovie}
+                >
+                <Image 
+                  source={icons.save}  
+                  className='size-6'
+                  tintColor="#fff"
+                  />
+              </TouchableOpacity>
+            </View>
+          </View>
           <View className='flex-row items-center gap-x-2 mt-2'>
             <Text className='text-light-200 text-sm'>{movie.release_date.split("-")[0]}</Text>
             <Text className='text-light-200 text-sm'>{movie.runtime}m</Text>

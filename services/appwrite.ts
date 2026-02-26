@@ -3,6 +3,7 @@ import { Client, Databases, ID, Query } from "react-native-appwrite";
 const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!;
 const COLLECTION_ID = process.env.EXPO_PUBLIC_APPWRITE_TABLE_ID!;
 const PROJECT_ID = process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID!;
+const SAVED_TABLE_ID = process.env.EXPO_PUBLIC_APPWRITE_SAVED_TABLE_ID!;
 
 const client = new Client()
     .setEndpoint('https://syd.cloud.appwrite.io/v1')
@@ -11,15 +12,10 @@ const client = new Client()
 const database = new Databases(client);
 
 export const updateSearchCount = async (query: string, movie: Movie) => {
-    console.log("Hello ")
-    console.log(movie.title)
-    console.log(query)
     try {
         const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
             Query.equal('searchTerm', query)
         ])
-
-        console.log(result)
 
         if (result.documents.length > 0) {
             console.log("Updating count")
@@ -48,12 +44,40 @@ export const getTrendingMovies = async(): Promise<TrendingMovie[] | undefined> =
             Query.limit(5),
             Query.orderDesc('count')
         ])
-        console.log("Trending")
-        console.log(result.documents)
         return result.documents as unknown as TrendingMovie[];
 
     } catch(error) {
         console.log(error)
         throw undefined;
+    }
+}
+
+export const saveDeleteMovie = async (movie: Movie) => {
+    console.log("Movie ID is ",movie.id)
+    let action = ""
+    try {
+        const result = await database.listDocuments(DATABASE_ID, SAVED_TABLE_ID, [
+            Query.equal('movie_id', movie.id)
+        ])
+
+        if (result.documents.length > 0) {
+            // Deleting movie
+            await database.deleteDocument(DATABASE_ID, SAVED_TABLE_ID, result.documents[0].$id)
+            action="deleted"
+        } else {
+            // Saving movie
+            await database.createDocument(DATABASE_ID, SAVED_TABLE_ID, ID.unique(), {
+                movie_id: movie.id,
+                title: movie.title,
+                poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+            })
+            action="saved"
+        }
+    } catch (error) {
+        console.log("Error accessing movie", error);
+        throw error;
+    } finally {
+        console.log("Finally ",action)
+        return action;
     }
 }

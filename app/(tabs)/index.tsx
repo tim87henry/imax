@@ -12,7 +12,6 @@ import TrendingCard from "../components/TrendingCard";
 export default function Index() {
 
   const router = useRouter();
-  // console.log("hello")
 
   const {
     data: trendingMovies,
@@ -28,7 +27,6 @@ export default function Index() {
     query: ''
   }))
 
-  // console.log(moviesLoading)
 
   return (
     <View className="flex-1 bg-primary">
