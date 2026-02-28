@@ -75,7 +75,7 @@ export default function Index() {
                 contentContainerStyle={{
                     gap: 26,
                 }}
-            />
+              />
             </View>
           )}
 

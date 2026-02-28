@@ -40,7 +40,6 @@ const MovieDetails = () => {
 
   const saveMovie = async () => {
     let action=await saveDeleteMovie(movie)
-    console.log("This is what happened :: ",action)
     Toast.show({
       type: action === 'saved' ? 'success' : 'info',
       text1:

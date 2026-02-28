@@ -18,8 +18,6 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
         ])
 
         if (result.documents.length > 0) {
-            console.log("Updating count")
-            console.log(result.documents[0].count)
             await database.updateDocument(DATABASE_ID, COLLECTION_ID, result.documents[0].$id, {
                 count: result.documents[0].count + 1
         })
@@ -53,7 +51,6 @@ export const getTrendingMovies = async(): Promise<TrendingMovie[] | undefined> =
 }
 
 export const saveDeleteMovie = async (movie: Movie) => {
-    console.log("Movie ID is ",movie.id)
     let action = ""
     try {
         const result = await database.listDocuments(DATABASE_ID, SAVED_TABLE_ID, [
@@ -74,10 +71,8 @@ export const saveDeleteMovie = async (movie: Movie) => {
             action="saved"
         }
     } catch (error) {
-        console.log("Error accessing movie", error);
         throw error;
     } finally {
-        console.log("Finally ",action)
         return action;
     }
 }
